@@ -1,19 +1,39 @@
 package unicauca.movil.peliculas;
 
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements DialogInterface.OnClickListener{
+
+    ListView list;
+    int pos;
+    AlertDialog delete;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        list = (ListView) findViewById(R.id.list);
+        registerForContextMenu(list);
+
+        delete = new AlertDialog.Builder(this)
+                .setTitle("Eliminar")
+                .setMessage("Desea eliminar la pelicula?")
+                //.setView()
+                .setPositiveButton("Aceptar",this)
+                .setNegativeButton("Cancelar",this)
+                .create();
+
     }
 
     //region Metodos de Option Menu
@@ -45,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
     }
     //endregion
 
-
+    //region Metodos de Context Menu
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
 
@@ -57,15 +77,33 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
 
+        AdapterView.AdapterContextMenuInfo info =
+                (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+
+        pos = info.position;
+
         switch(item.getItemId()){
             case R.id.action_edit:
                 Toast.makeText(this,"Editar !",Toast.LENGTH_SHORT).show();
                 break;
             case R.id.action_delete:
-                Toast.makeText(this,"Eliminar !",Toast.LENGTH_SHORT).show();
+                delete.show();
                 break;
         }
 
         return super.onContextItemSelected(item);
     }
+
+    //endregion
+
+
+    @Override
+    public void onClick(DialogInterface dialog, int which) {
+        if(which == DialogInterface.BUTTON_POSITIVE){
+
+        }
+    }
+
+
+
 }
