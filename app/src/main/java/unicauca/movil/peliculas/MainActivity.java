@@ -1,6 +1,7 @@
 package unicauca.movil.peliculas;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import java.util.List;
 
 import unicauca.movil.peliculas.adapters.PeliculaAdapter;
 import unicauca.movil.peliculas.models.Pelicula;
+import unicauca.movil.peliculas.util.AppUtil;
 
 public class MainActivity extends AppCompatActivity implements DialogInterface.OnClickListener{
 
@@ -24,7 +26,6 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
     int pos;
     AlertDialog delete;
 
-    List<Pelicula> data;
     PeliculaAdapter adapter;
 
     @Override
@@ -33,8 +34,8 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
         setContentView(R.layout.activity_main);
 
         list = (ListView) findViewById(R.id.list);
-        data = new ArrayList<>();
-        adapter = new PeliculaAdapter(this, data);
+        AppUtil.data = new ArrayList<>();
+        adapter = new PeliculaAdapter(this, AppUtil.data);
         list.setAdapter(adapter);
 
         registerForContextMenu(list);
@@ -47,6 +48,24 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
                 .setNegativeButton("Cancelar",this)
                 .create();
 
+        loadData();
+
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        adapter.notifyDataSetChanged();
+
+    }
+
+    private void loadData() {
+        String peliculas[] = getResources().getStringArray(R.array.peliculas);
+        for(int i = 0 ;i<peliculas.length;i++){
+            Pelicula p =  new Pelicula(peliculas[i]);
+            AppUtil.data.add(p);
+        }
+        adapter.notifyDataSetChanged();
     }
 
     //region Metodos de Option Menu
@@ -61,7 +80,10 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
 
         switch(item.getItemId()){
             case R.id.action_add:
-                Toast.makeText(this,"Agregar",Toast.LENGTH_SHORT).show();
+
+                Intent intent = new Intent(this, AddActivity.class);
+                startActivity(intent);
+
                 break;
             case R.id.action_other:
                 Toast.makeText(this,"otros",Toast.LENGTH_SHORT).show();
@@ -97,7 +119,9 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
 
         switch(item.getItemId()){
             case R.id.action_edit:
-                Toast.makeText(this,"Editar !",Toast.LENGTH_SHORT).show();
+                Intent intent =  new Intent(this, AddActivity.class);
+                intent.putExtra(AddActivity.KEY_POS,pos);
+                startActivity(intent);
                 break;
             case R.id.action_delete:
                 delete.show();
@@ -113,7 +137,8 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
     @Override
     public void onClick(DialogInterface dialog, int which) {
         if(which == DialogInterface.BUTTON_POSITIVE){
-
+            AppUtil.data.remove(pos);
+            adapter.notifyDataSetChanged();
         }
     }
 

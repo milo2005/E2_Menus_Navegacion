@@ -15,4 +15,7 @@
         <item>Batman v Superman</item>
         <item>the maze Runner</item>
     </string-array>
+    <string name="title_activity_add">Agregar Pelicula</string>
+    <string name="add_name">Nombre Pelicula</string>
+    <string name="btn">Guardar</string>
 </resources>
