@@ -12,11 +12,20 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import unicauca.movil.peliculas.adapters.PeliculaAdapter;
+import unicauca.movil.peliculas.models.Pelicula;
+
 public class MainActivity extends AppCompatActivity implements DialogInterface.OnClickListener{
 
     ListView list;
     int pos;
     AlertDialog delete;
+
+    List<Pelicula> data;
+    PeliculaAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +33,10 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
         setContentView(R.layout.activity_main);
 
         list = (ListView) findViewById(R.id.list);
+        data = new ArrayList<>();
+        adapter = new PeliculaAdapter(this, data);
+        list.setAdapter(adapter);
+
         registerForContextMenu(list);
 
         delete = new AlertDialog.Builder(this)
